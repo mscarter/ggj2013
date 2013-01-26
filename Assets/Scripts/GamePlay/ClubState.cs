@@ -23,8 +23,9 @@ public class ClubState : MonoBehaviour {
 	public Rect viewIntroButtonRect;
 	
 	// Intro screen parameters
-	public GUIStyle playGameButton;
+	public GUIStyle playGameButtonStyle;
 	public Rect playGameButtonRect;
+	public GUIStyle gameBackgroundStyle;
 	public string gameBackgroundText;
 	public Rect gameBackgroundTextRect;
 	
@@ -192,14 +193,6 @@ public class ClubState : MonoBehaviour {
 		}
 	}
 	
-	void RenderPlayingGUI()
-	{
-	}
-	
-	void RenderScoringGUI()
-	{
-	}
-	
 	void RenderSplashScreenGUI()
 	{
 		GUI.DrawTexture(backgroundRect, backgroundTexture);
@@ -214,8 +207,26 @@ public class ClubState : MonoBehaviour {
 	
 	void RenderIntroScreenGUI()
 	{
+		GUI.DrawTexture(backgroundRect, backgroundTexture);
+		
+		GUI.Label(gameBackgroundTextRect, gameBackgroundText, gameBackgroundStyle);
+		
+		if (GUI.Button(playGameButtonRect, "", playGameButtonStyle))
+		{
+			StartGame();
+		}
 	}
 	
+	void RenderPlayingGUI()
+	{
+		GUI.DrawTexture(backgroundRect, backgroundTexture);
+	}
+	
+	void RenderScoringGUI()
+	{
+		GUI.DrawTexture(backgroundRect, backgroundTexture);
+	}
+
 	void RenderCreditsGUI()
 	{
 	}
