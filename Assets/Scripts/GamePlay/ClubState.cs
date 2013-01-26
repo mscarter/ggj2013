@@ -13,12 +13,36 @@ public class ClubState : MonoBehaviour {
 	public int aliensTurnedAway;
 	public int humansTurnedAway;
 	
+	#region GUI parameters
+	// Splash screen parameters
+	public Rect gameLogoRect;
+	public Texture gameLogoTexture;
+	public GUIStyle viewIntroButton;
+	public Rect viewIntroButtonRect;
+	
+	// Intro screen parameters
+	public GUIStyle playGameButton;
+	public Rect playGameButtonRect;
+	public string gameBackgroundText;
+	public Rect gameBackgroundTextRect;
+	
+	// Playing game parameters
+	public Rect identityCardRect;
+	public GUIStyle responseTextStyle;
+	public Rect responseRect;
 	public GUIStyle questionButtonStyle;
+	public Rect question1Rect;
+	public Rect question2Rect;
+	public Rect question3Rect; 	
+	#endregion GUI parameters
 	
 	private enum GameState
 	{
+		SplashScreen,
+		IntroScreen,
 		Playing,
-		Scoring
+		Scoring,
+		Credits
 	}
 	
 	private GameState state;
@@ -43,6 +67,7 @@ public class ClubState : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+		state = GameState.SplashScreen;
 	}
 	
 	public void StartGame()
@@ -147,11 +172,20 @@ public class ClubState : MonoBehaviour {
 	{
 		switch (state)
 		{
+		case GameState.SplashScreen:
+			RenderSplashScreenGUI();
+			break;
+		case GameState.IntroScreen:
+			RenderIntroScreenGUI();
+			break;
 		case GameState.Playing:
 			RenderPlayingGUI();
 			break;
 		case GameState.Scoring:
 			RenderScoringGUI();
+			break;
+		case GameState.Credits:
+			RenderCreditsGUI();
 			break;
 		}
 	}
@@ -161,6 +195,18 @@ public class ClubState : MonoBehaviour {
 	}
 	
 	void RenderScoringGUI()
+	{
+	}
+	
+	void RenderSplashScreenGUI()
+	{
+	}
+	
+	void RenderIntroScreenGUI()
+	{
+	}
+	
+	void RenderCreditsGUI()
 	{
 	}
 }
