@@ -2,14 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class DialogTreeEntry : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	public CharacterDialog question1;
+	public CharacterDialog question2;
+	public CharacterDialog question3;
 }
