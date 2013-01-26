@@ -31,12 +31,12 @@ public class MainMenu : MonoBehaviour {
 		
 		if (GUI.Button(newGameButtonRect, "", newGameButtonStyle))
 		{
-			// TODO: start a new game
+			ClubState.instance.StartGame();
 		}
 
 		if (GUI.Button(creditsButtonRect, "", creditsButtonStyle))
 		{
-			//TODO: display credits GUI (is this an alternate club state?
+			ClubState.instance.ShowCredits();
 		}
 
 		if (GUI.Button(exitGameButtonRect, "", exitGameButtonStyle))

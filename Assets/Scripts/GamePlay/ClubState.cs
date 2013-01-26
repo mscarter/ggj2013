@@ -36,7 +36,15 @@ public class ClubState : MonoBehaviour {
 	public GUIStyle questionButtonStyle;
 	public Rect question1Rect;
 	public Rect question2Rect;
-	public Rect question3Rect; 	
+	public Rect question3Rect; 
+	public Rect allowInButtonRect;
+	public GUIStyle allowInButtonStyle;
+	public Rect kickOutButtonRect;
+	public GUIStyle kickOutButtonStyle;
+	public Rect clubMapRect;
+	public Texture clubMapTexture;
+	public Rect clubPatronCountRect;
+	public GUIStyle clubPatronCountStyle;
 	#endregion GUI parameters
 	
 	private enum GameState
@@ -57,6 +65,8 @@ public class ClubState : MonoBehaviour {
 	
 	private GUIContent descriptionOrResponse = new GUIContent();
 	private CharacterDialog[] currentQuestion = new CharacterDialog[3];
+	
+	private string clubPatronCount;
 
 	void Awake()
 	{
@@ -81,6 +91,8 @@ public class ClubState : MonoBehaviour {
 		aliensTurnedAway = 0;
 		humansTurnedAway = 0;
 		
+		clubPatronCount = string.Format("{0}/{1}", currentClubPatrons, currentClubSpace);
+		
 		state = GameState.Playing;
 		
 		patronUsed = new bool[PatronManager.instance.patronList.Length];
@@ -89,7 +101,6 @@ public class ClubState : MonoBehaviour {
 			patronUsed[i] = false;
 		}
 		
-
 		currentPatron = GetNextPatron();
 		
 		SetupCurrentPatron();
@@ -138,6 +149,7 @@ public class ClubState : MonoBehaviour {
 		if (allowIn)
 		{
 			++currentClubPatrons;
+			clubPatronCount = string.Format("{0}/{1}", currentClubPatrons, currentClubSpace);
 			if ( currentPatron.isAlien ) ++currentAlienCount;
 			if ( currentClubPatrons == currentClubSpace )
 			{
@@ -156,18 +168,18 @@ public class ClubState : MonoBehaviour {
 			{
 				++humansTurnedAway;
 			}
-			
-			currentPatron = GetNextPatron();
-			
-			if (null != currentPatron)
-			{
-				SetupCurrentPatron();
-			}
-			else
-			{
-				// We ran out of possible patrons, score it
-				state = GameState.Scoring;
-			}
+		}
+				
+		currentPatron = GetNextPatron();
+		
+		if (null != currentPatron)
+		{
+			SetupCurrentPatron();
+		}
+		else
+		{
+			// We ran out of possible patrons, score it
+			state = GameState.Scoring;
 		}
 	}
 
@@ -220,13 +232,51 @@ public class ClubState : MonoBehaviour {
 	void RenderPlayingGUI()
 	{
 		GUI.DrawTexture(backgroundRect, backgroundTexture);
+		
+		GUI.DrawTexture(identityCardRect, currentPatron.idCardTexture);
+		
+		GUI.Label(responseRect, descriptionOrResponse, responseTextStyle);
+		
+		if (GUI.Button(question1Rect, currentQuestion[0].question, questionButtonStyle))
+		{
+			AskQuestion(0);
+		}
+		
+		if (GUI.Button(question2Rect, currentQuestion[1].question, questionButtonStyle))
+		{
+			AskQuestion(1);
+		}
+		
+		if (GUI.Button(question3Rect, currentQuestion[2].question, questionButtonStyle))
+		{
+			AskQuestion(2);
+		}
+		
+		if (GUI.Button(allowInButtonRect, "", allowInButtonStyle))
+		{
+			DecideOnPatron(true);
+		}
+		
+		if (GUI.Button(kickOutButtonRect, "", kickOutButtonStyle))
+		{
+			DecideOnPatron(false);
+		}
+		
+		GUI.DrawTexture(clubMapRect, clubMapTexture);
+		
+		GUI.Label(clubPatronCountRect, clubPatronCount, clubPatronCountStyle);
 	}
 	
 	void RenderScoringGUI()
 	{
 		GUI.DrawTexture(backgroundRect, backgroundTexture);
 	}
-
+	
+	public void ShowCredits()
+	{
+		state = GameState.Credits;
+	}
+	
 	void RenderCreditsGUI()
 	{
 	}
