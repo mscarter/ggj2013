@@ -15,9 +15,11 @@ public class ClubState : MonoBehaviour {
 	
 	#region GUI parameters
 	// Splash screen parameters
-	public Rect gameLogoRect;
 	public Texture gameLogoTexture;
-	public GUIStyle viewIntroButton;
+	public Rect gameLogoRect;
+	public Texture backgroundTexture;
+	public Rect backgroundRect;
+	public GUIStyle viewIntroButtonStyle;
 	public Rect viewIntroButtonRect;
 	
 	// Intro screen parameters
@@ -200,6 +202,14 @@ public class ClubState : MonoBehaviour {
 	
 	void RenderSplashScreenGUI()
 	{
+		GUI.DrawTexture(backgroundRect, backgroundTexture);
+		
+		GUI.DrawTexture(gameLogoRect, gameLogoTexture);
+
+		if (GUI.Button(viewIntroButtonRect, "", viewIntroButtonStyle))
+		{
+			state = GameState.IntroScreen;
+		}
 	}
 	
 	void RenderIntroScreenGUI()
