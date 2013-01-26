@@ -4,11 +4,17 @@ using System.Collections;
 public class MainMenu : MonoBehaviour {
 	public static MainMenu instance;
 	
-	public GUIStyle menuStyle;
+	public Texture menuBackgroundTexture;
+	public Rect menuBackgroundRect;
 	
-	public GUIContent playButton;
-	public Vector2 playButtonSize;
-	public Vector2 playButtonPosition;
+	public GUIStyle newGameButtonStyle;
+	public Rect newGameButtonRect;
+	
+	public GUIStyle exitGameButtonStyle;
+	public Rect exitGameButtonRect;
+	
+	public GUIStyle creditsButtonStyle;
+	public Rect creditsButtonRect;
 	
 	void Awake()
 	{
@@ -21,9 +27,21 @@ public class MainMenu : MonoBehaviour {
 
 	void OnGUI()
 	{
-		if (GUI.Button(new Rect(playButtonPosition.x, playButtonPosition.y, playButtonSize.x, playButtonSize.y), playButton, menuStyle))
+		GUI.DrawTexture(menuBackgroundRect, menuBackgroundTexture);
+		
+		if (GUI.Button(newGameButtonRect, "", newGameButtonStyle))
 		{
 			// TODO: start a new game
+		}
+
+		if (GUI.Button(creditsButtonRect, "", creditsButtonStyle))
+		{
+			//TODO: display credits GUI (is this an alternate club state?
+		}
+
+		if (GUI.Button(exitGameButtonRect, "", exitGameButtonStyle))
+		{
+			Application.Quit();
 		}
 	}
 }
