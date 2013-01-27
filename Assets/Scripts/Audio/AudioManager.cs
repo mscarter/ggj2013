@@ -6,6 +6,8 @@ public class AudioManager : MonoBehaviour {
 	
 	public AudioClip[] songList;
 	
+	public GUIStyle audioBackgroundStyle;
+	public Rect audioBackgroundRect;
 	public Rect audioIconRect;
 	public Texture audioIcon;
 	
@@ -69,11 +71,13 @@ public class AudioManager : MonoBehaviour {
 	// Update is called once per frame
 	void OnGUI()
 	{
-		GUI.DrawTexture(audioIconRect, audioIcon);
-		
-		if (GUI.Button(nowPlayingTextRect, nowPlayingText, nowPlayingTextStyle))
+		if (GUI.Button(audioBackgroundRect, "", audioBackgroundStyle))
 		{
 			PlayNextSong();
 		}
+		
+		GUI.DrawTexture(audioIconRect, audioIcon);
+		
+		GUI.Label(nowPlayingTextRect, nowPlayingText, nowPlayingTextStyle);
 	}
 }

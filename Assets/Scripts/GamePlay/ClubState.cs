@@ -23,6 +23,7 @@ public class ClubState : MonoBehaviour {
 	public Rect viewIntroButtonRect;
 	
 	// Intro screen parameters
+	public Rect introLogoRect;
 	public GUIStyle playGameButtonStyle;
 	public Rect playGameButtonRect;
 	public GUIStyle gameBackgroundStyle;
@@ -30,13 +31,21 @@ public class ClubState : MonoBehaviour {
 	public Rect gameBackgroundTextRect;
 	
 	// Playing game parameters
+	public Rect questionBackgroundRect;
+	public Texture questionBackgroundTexture;
 	public Rect identityCardRect;
 	public GUIStyle responseTextStyle;
 	public Rect responseRect;
+	public Rect rightQuoteRect;
+	public Texture rightQuoteTexture;
+	public Rect leftQuoteRect;
+	public Texture leftQuoteTexture;
 	public GUIStyle questionButtonStyle;
 	public Rect question1Rect;
 	public Rect question2Rect;
 	public Rect question3Rect; 
+	public Rect choiceRect;
+	public GUIStyle choiceBackgroundStyle;
 	public Rect allowInButtonRect;
 	public GUIStyle allowInButtonStyle;
 	public Rect kickOutButtonRect;
@@ -45,6 +54,8 @@ public class ClubState : MonoBehaviour {
 	public Texture clubMapTexture;
 	public Rect clubPatronCountRect;
 	public GUIStyle clubPatronCountStyle;
+	public Rect clubBackgroundRect;
+	public Texture clubBackgroundTexture;
 	
 	// Credits screen parameters
 	public Rect[] creditRects;
@@ -62,6 +73,8 @@ public class ClubState : MonoBehaviour {
 		SplashScreen,
 		IntroScreen,
 		Playing,
+		LettingIn,
+		Rejected,
 		Scoring,
 		Credits
 	}
@@ -101,7 +114,7 @@ public class ClubState : MonoBehaviour {
 		aliensTurnedAway = 0;
 		humansTurnedAway = 0;
 		
-		clubPatronCount = string.Format("{0}/{1}", currentClubPatrons, currentClubSpace);
+		clubPatronCount = string.Format("{0} of {1}", currentClubPatrons, currentClubSpace);
 		
 		state = GameState.Playing;
 		
@@ -160,14 +173,10 @@ public class ClubState : MonoBehaviour {
 		{
 			AudioManager.instance.IncreaseVolume();
 			++currentClubPatrons;
-			clubPatronCount = string.Format("{0}/{1}", currentClubPatrons, currentClubSpace);
+			clubPatronCount = string.Format("{0} of {1}", currentClubPatrons, currentClubSpace);
 			if ( currentPatron.isAlien ) ++currentAlienCount;
-			if ( currentClubPatrons == currentClubSpace )
-			{
-				// Game complete, let's score it
-				state = GameState.Scoring;
-				return;
-			}
+			descriptionOrResponse.text = "Go on in.";
+			state = GameState.LettingIn;
 		}
 		else
 		{
@@ -180,18 +189,35 @@ public class ClubState : MonoBehaviour {
 			{
 				++humansTurnedAway;
 			}
+			descriptionOrResponse.text = "None shall pass!";
+			state = GameState.Rejected;
 		}
-				
-		currentPatron = GetNextPatron();
 		
-		if (null != currentPatron)
+		StartCoroutine(NextPatron());
+	}
+	
+	IEnumerator NextPatron()
+	{
+		yield return new WaitForSeconds(5);
+		
+		if (currentClubPatrons == currentClubSpace)
 		{
-			SetupCurrentPatron();
+			state = GameState.Scoring;
 		}
 		else
 		{
-			// We ran out of possible patrons, score it
-			state = GameState.Scoring;
+			currentPatron = GetNextPatron();
+			
+			if (null != currentPatron)
+			{
+				SetupCurrentPatron();
+				state = GameState.Playing;
+			}
+			else
+			{
+				// We ran out of possible patrons, score it
+				state = GameState.Scoring;
+			}
 		}
 	}
 
@@ -207,6 +233,12 @@ public class ClubState : MonoBehaviour {
 			break;
 		case GameState.Playing:
 			RenderPlayingGUI();
+			break;
+		case GameState.LettingIn:
+			RenderLettingInGUI();
+			break;
+		case GameState.Rejected:
+			RenderRejectedGUI();
 			break;
 		case GameState.Scoring:
 			RenderScoringGUI();
@@ -234,6 +266,8 @@ public class ClubState : MonoBehaviour {
 	{
 		GUI.DrawTexture(backgroundRect, backgroundTexture);
 		
+		GUI.DrawTexture(introLogoRect, gameLogoTexture);
+
 		GUI.Label(gameBackgroundTextRect, gameBackgroundText, gameBackgroundStyle);
 		
 		if (GUI.Button(playGameButtonRect, "", playGameButtonStyle))
@@ -247,9 +281,16 @@ public class ClubState : MonoBehaviour {
 	{
 		GUI.DrawTexture(backgroundRect, backgroundTexture);
 		
+		GUI.DrawTexture(clubBackgroundRect, clubBackgroundTexture);
+		
+		GUI.DrawTexture(questionBackgroundRect, questionBackgroundTexture);
+		
 		GUI.DrawTexture(identityCardRect, currentPatron.idCardTexture);
 		
 		GUI.Label(responseRect, descriptionOrResponse, responseTextStyle);
+
+		GUI.DrawTexture(leftQuoteRect, leftQuoteTexture);
+		GUI.DrawTexture(rightQuoteRect, rightQuoteTexture);
 		
 		if (null != currentQuestion[0] && GUI.Button(question1Rect, currentQuestion[0].question, questionButtonStyle))
 		{
@@ -269,6 +310,8 @@ public class ClubState : MonoBehaviour {
 			AskQuestion(2);
 		}
 		
+		GUI.Label(choiceRect, "Select a question on the right or\nchoose a fate below at any time.", choiceBackgroundStyle);
+		
 		if (GUI.Button(allowInButtonRect, "", allowInButtonStyle))
 		{
 			DecideOnPatron(true);
@@ -278,6 +321,58 @@ public class ClubState : MonoBehaviour {
 		{
 			DecideOnPatron(false);
 		}
+		
+		GUI.DrawTexture(clubMapRect, clubMapTexture);
+		
+		GUI.Label(clubPatronCountRect, clubPatronCount, clubPatronCountStyle);
+	}
+	
+	void RenderLettingInGUI()
+	{
+		GUI.DrawTexture(backgroundRect, backgroundTexture);
+		
+		GUI.DrawTexture(clubBackgroundRect, clubBackgroundTexture);
+		
+		GUI.DrawTexture(questionBackgroundRect, questionBackgroundTexture);
+		
+		GUI.DrawTexture(identityCardRect, currentPatron.idCardTexture);
+		
+		GUI.Label(responseRect, descriptionOrResponse, responseTextStyle);
+
+		GUI.DrawTexture(leftQuoteRect, leftQuoteTexture);
+		GUI.DrawTexture(rightQuoteRect, rightQuoteTexture);
+		
+		GUI.Label(choiceRect, "Select a question on the right or\nchoose a fate below at any time.", choiceBackgroundStyle);
+		
+		GUI.Label(allowInButtonRect, "", allowInButtonStyle);
+		
+		GUI.Label(kickOutButtonRect, "", kickOutButtonStyle);
+		
+		GUI.DrawTexture(clubMapRect, clubMapTexture);
+		
+		GUI.Label(clubPatronCountRect, clubPatronCount, clubPatronCountStyle);
+	}
+	
+	void RenderRejectedGUI()
+	{
+		GUI.DrawTexture(backgroundRect, backgroundTexture);
+		
+		GUI.DrawTexture(clubBackgroundRect, clubBackgroundTexture);
+		
+		GUI.DrawTexture(questionBackgroundRect, questionBackgroundTexture);
+		
+		GUI.DrawTexture(identityCardRect, currentPatron.idCardTexture);
+		
+		GUI.Label(responseRect, descriptionOrResponse, responseTextStyle);
+
+		GUI.DrawTexture(leftQuoteRect, leftQuoteTexture);
+		GUI.DrawTexture(rightQuoteRect, rightQuoteTexture);
+		
+		GUI.Label(choiceRect, "Select a question on the right or\nchoose a fate below at any time.", choiceBackgroundStyle);
+		
+		GUI.Label(allowInButtonRect, "", allowInButtonStyle);
+		
+		GUI.Label(kickOutButtonRect, "", kickOutButtonStyle);
 		
 		GUI.DrawTexture(clubMapRect, clubMapTexture);
 		
