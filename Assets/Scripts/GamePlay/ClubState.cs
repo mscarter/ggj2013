@@ -59,6 +59,8 @@ public class ClubState : MonoBehaviour {
 	public Rect clubBackgroundRect;
 	public Texture clubBackgroundTexture;
 	public Texture clubBackgroundOpenDoorTexture;
+	public Texture clubStampTexture;
+	public Texture rejectedStampTexture;
 	
 	// Credits screen parameters
 	public Rect[] creditRects;
@@ -69,6 +71,7 @@ public class ClubState : MonoBehaviour {
 	public AudioSource buttonClickSource;
 	public AudioSource introScreenSource;
 	public AudioSource denyAudioSource;
+	public AudioSource doorsOpenedAudioSource;
 	#endregion
 	
 	public enum GameState
@@ -182,6 +185,7 @@ public class ClubState : MonoBehaviour {
 		if (allowIn)
 		{
 			AudioManager.instance.IncreaseVolume(3);
+			doorsOpenedAudioSource.Play();
 			++currentClubPatrons;
 			clubPatronCount = string.Format("{0} of {1}", currentClubPatrons, currentClubSpace);
 			if ( currentPatron.isAlien )
@@ -397,6 +401,8 @@ public class ClubState : MonoBehaviour {
 		
 		GUI.DrawTexture(identityCardRect, currentPatron.idCardTexture);
 		
+		GUI.DrawTexture(identityCardRect, clubStampTexture);
+
 		GUI.Label(responseRect, descriptionOrResponse, responseTextStyle);
 
 		GUI.DrawTexture(leftQuoteRect, leftQuoteTexture);
@@ -423,6 +429,8 @@ public class ClubState : MonoBehaviour {
 		
 		GUI.DrawTexture(identityCardRect, currentPatron.idCardTexture);
 		
+		GUI.DrawTexture(identityCardRect, rejectedStampTexture);
+
 		GUI.Label(responseRect, descriptionOrResponse, responseTextStyle);
 
 		GUI.DrawTexture(leftQuoteRect, leftQuoteTexture);
