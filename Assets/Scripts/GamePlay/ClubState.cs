@@ -9,6 +9,7 @@ public class ClubState : MonoBehaviour {
 	
 	public int currentClubSpace = 50;
 	public int currentClubPatrons = 30;
+	public int currentHumanCount;
 	public int currentAlienCount;
 	public int aliensTurnedAway;
 	public int humansTurnedAway;
@@ -92,6 +93,8 @@ public class ClubState : MonoBehaviour {
 	
 	private string clubPatronCount;
 	
+	private string scoreResults;
+	
 	void Awake()
 	{
 		if (instance != null)
@@ -111,6 +114,7 @@ public class ClubState : MonoBehaviour {
 	{
 		currentClubSpace = startingClubSpace;
 		currentClubPatrons = startingClubPatrons;
+		currentHumanCount = 0;
 		currentAlienCount = 0;
 		aliensTurnedAway = 0;
 		humansTurnedAway = 0;
@@ -175,7 +179,14 @@ public class ClubState : MonoBehaviour {
 			AudioManager.instance.IncreaseVolume();
 			++currentClubPatrons;
 			clubPatronCount = string.Format("{0} of {1}", currentClubPatrons, currentClubSpace);
-			if ( currentPatron.isAlien ) ++currentAlienCount;
+			if ( currentPatron.isAlien )
+			{
+				++currentAlienCount;
+			}
+			else
+			{
+				++currentHumanCount;
+			}
 			descriptionOrResponse.text = "Go on in.";
 			state = GameState.LettingIn;
 		}
@@ -203,6 +214,7 @@ public class ClubState : MonoBehaviour {
 		
 		if (currentClubPatrons == currentClubSpace)
 		{
+			CreateScoringString();
 			state = GameState.Scoring;
 		}
 		else
@@ -217,9 +229,23 @@ public class ClubState : MonoBehaviour {
 			else
 			{
 				// We ran out of possible patrons, score it
+				CreateScoringString();
 				state = GameState.Scoring;
 			}
 		}
+	}
+	
+	void CreateScoringString()
+	{
+		introScreenSource.Play();
+		
+		scoreResults = string.Format("Results:\n{0} Questions asked\n{1} Humans allowed in\n{2} Aliens allowed in\n\n{3}",
+			questionsAsked, currentHumanCount, currentAlienCount, GetNewsBlurb(currentAlienCount));
+	}
+	
+	string GetNewsBlurb(int alienCount)
+	{
+		return "Foooooooo.";
 	}
 
 	void OnGUI()
@@ -383,6 +409,10 @@ public class ClubState : MonoBehaviour {
 	void RenderScoringGUI()
 	{
 		GUI.DrawTexture(backgroundRect, backgroundTexture);
+		
+		GUI.DrawTexture(introLogoRect, gameLogoTexture);
+
+		GUI.Label(gameBackgroundTextRect, scoreResults, gameBackgroundStyle);
 	}
 	
 	public void GotoIntro()
