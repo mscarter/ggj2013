@@ -70,7 +70,7 @@ public class ClubState : MonoBehaviour {
 	public AudioSource denyAudioSource;
 	#endregion
 	
-	private enum GameState
+	public enum GameState
 	{
 		SplashScreen,
 		IntroScreen,
@@ -81,7 +81,7 @@ public class ClubState : MonoBehaviour {
 		Credits
 	}
 	
-	private GameState state;
+	public GameState state { get; private set; }
 	
 	private int questionsAsked;
 
@@ -176,7 +176,7 @@ public class ClubState : MonoBehaviour {
 	{
 		if (allowIn)
 		{
-			AudioManager.instance.IncreaseVolume();
+			AudioManager.instance.IncreaseVolume(3);
 			++currentClubPatrons;
 			clubPatronCount = string.Format("{0} of {1}", currentClubPatrons, currentClubSpace);
 			if ( currentPatron.isAlien )
@@ -210,7 +210,14 @@ public class ClubState : MonoBehaviour {
 	
 	IEnumerator NextPatron()
 	{
-		yield return new WaitForSeconds(5);
+		if (state == GameState.LettingIn)
+		{
+			yield return new WaitForSeconds(3);
+		}
+		else
+		{
+			yield return new WaitForSeconds(2);
+		}
 		
 		if (currentClubPatrons == currentClubSpace)
 		{
@@ -237,6 +244,7 @@ public class ClubState : MonoBehaviour {
 	
 	void CreateScoringString()
 	{
+		AudioManager.instance.Mute(5);
 		introScreenSource.Play();
 		
 		scoreResults = string.Format("Results:\n{0} Questions asked\n{1} Humans allowed in\n{2} Aliens allowed in\n\n{3}",
@@ -285,6 +293,7 @@ public class ClubState : MonoBehaviour {
 		if (GUI.Button(viewIntroButtonRect, "", viewIntroButtonStyle))
 		{
 			state = GameState.IntroScreen;
+			AudioManager.instance.Mute(5);
 			introScreenSource.Play();
 		}
 	}
@@ -417,6 +426,7 @@ public class ClubState : MonoBehaviour {
 	
 	public void GotoIntro()
 	{
+		AudioManager.instance.Mute(5);
 		introScreenSource.Play();
 		state = GameState.IntroScreen;	
 	}

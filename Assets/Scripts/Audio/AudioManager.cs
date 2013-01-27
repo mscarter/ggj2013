@@ -21,7 +21,7 @@ public class AudioManager : MonoBehaviour {
 	private int currentSong;
 	private string nowPlayingText;
 	private float songEndTime;
-	private float volumeIncreaseEndTime;
+	private float volumeChangeEndTime;
 	
 	void Awake()
 	{
@@ -41,7 +41,7 @@ public class AudioManager : MonoBehaviour {
 	
 	void Update()
 	{
-		if (Time.time > volumeIncreaseEndTime)
+		if (Time.time > volumeChangeEndTime)
 		{
 			audio.volume = quietVolume;
 		}
@@ -62,15 +62,23 @@ public class AudioManager : MonoBehaviour {
 		nowPlayingText = string.Format("Now Playing:\n{0}", songList[currentSong].name);
 	}
 	
-	public void IncreaseVolume()
+	public void IncreaseVolume(float duration)
 	{
 		audio.volume = loudVolume;
-		volumeIncreaseEndTime = Time.time + increaseVolumeDuration;
+		volumeChangeEndTime = Time.time + duration;
+	}
+	
+	public void Mute(float duration)
+	{
+		audio.volume = 0;
+		volumeChangeEndTime = Time.time + duration;
 	}
 	
 	// Update is called once per frame
 	void OnGUI()
 	{
+		if (ClubState.instance.state == ClubState.GameState.Credits) return;
+		
 		if (GUI.Button(audioBackgroundRect, "", audioBackgroundStyle))
 		{
 			PlayNextSong();
