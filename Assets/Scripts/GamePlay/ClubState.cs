@@ -45,6 +45,10 @@ public class ClubState : MonoBehaviour {
 	public Texture clubMapTexture;
 	public Rect clubPatronCountRect;
 	public GUIStyle clubPatronCountStyle;
+	
+	// Credits screen parameters
+	public Rect[] creditRects;
+	public Texture[] creditTextures;
 	#endregion GUI parameters
 	
 	private enum GameState
@@ -279,5 +283,11 @@ public class ClubState : MonoBehaviour {
 	
 	void RenderCreditsGUI()
 	{
+		int creditsCount = Mathf.Min(creditRects.Length, creditTextures.Length);
+		
+		for (int i = 0; i < creditsCount; ++i)
+		{
+			GUI.DrawTexture(creditRects[i], creditTextures[i]);
+		}
 	}
 }
