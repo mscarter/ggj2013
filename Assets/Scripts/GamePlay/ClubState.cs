@@ -262,9 +262,21 @@ public class ClubState : MonoBehaviour {
 	
 	string GetNewsBlurb(int alienCount)
 	{
+		if (currentClubPatrons < currentClubSpace)
+		{
+			return "We need you to fill the club, Agent BH9. We have a reputation to uphold of always drawing a full crowd.";
+		}
+		if (questionsAsked == 0)
+		{
+			if (alienCount == 0)
+			{
+				return "Wow Agent BH9, you must be psychic!";
+			}
+			return "Um, you might want to actually ask some questions, Agent BH9.  Sloppy work.";
+		}
 		if (alienCount >= 10)
 		{
-			return "GG Agent BH. Uninstall the game already.";
+			return "GG Agent BH9. Uninstall the game already.";
 		}
 		if (alienCount >= 7)
 		{
