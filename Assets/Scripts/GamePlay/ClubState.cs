@@ -56,6 +56,7 @@ public class ClubState : MonoBehaviour {
 	public GUIStyle clubPatronCountStyle;
 	public Rect clubBackgroundRect;
 	public Texture clubBackgroundTexture;
+	public Texture clubBackgroundOpenDoorTexture;
 	
 	// Credits screen parameters
 	public Rect[] creditRects;
@@ -331,7 +332,7 @@ public class ClubState : MonoBehaviour {
 	{
 		GUI.DrawTexture(backgroundRect, backgroundTexture);
 		
-		GUI.DrawTexture(clubBackgroundRect, clubBackgroundTexture);
+		GUI.DrawTexture(clubBackgroundRect, clubBackgroundOpenDoorTexture);
 		
 		GUI.DrawTexture(questionBackgroundRect, questionBackgroundTexture);
 		
