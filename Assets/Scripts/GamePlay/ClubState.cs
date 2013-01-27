@@ -32,6 +32,7 @@ public class ClubState : MonoBehaviour {
 	public Rect gameBackgroundTextRect;
 	
 	// Playing game parameters
+	public Texture playingBackgroundTexture;
 	public Rect questionBackgroundRect;
 	public Texture questionBackgroundTexture;
 	public Rect identityCardRect;
@@ -95,6 +96,8 @@ public class ClubState : MonoBehaviour {
 	
 	private string scoreResults;
 	
+	private bool displayQuotes;
+	
 	void Awake()
 	{
 		if (instance != null)
@@ -138,6 +141,7 @@ public class ClubState : MonoBehaviour {
 	
 	void SetupCurrentPatron()
 	{
+		displayQuotes = false;
 		descriptionOrResponse.text = currentPatron.characterTextDescription;
 		currentQuestion[0] = currentPatron.initialQuestion1;
 		currentQuestion[1] = currentPatron.initialQuestion2;
@@ -166,6 +170,7 @@ public class ClubState : MonoBehaviour {
 	void AskQuestion(int questionIndex)
 	{
 		++questionsAsked;
+		displayQuotes = true;
 		
 		descriptionOrResponse.text = currentQuestion[questionIndex].answer;
 		
@@ -331,7 +336,7 @@ public class ClubState : MonoBehaviour {
 	
 	void RenderPlayingGUI()
 	{
-		GUI.DrawTexture(backgroundRect, backgroundTexture);
+		GUI.DrawTexture(backgroundRect, playingBackgroundTexture);
 		
 		GUI.DrawTexture(clubBackgroundRect, clubBackgroundTexture);
 		
@@ -340,9 +345,12 @@ public class ClubState : MonoBehaviour {
 		GUI.DrawTexture(identityCardRect, currentPatron.idCardTexture);
 		
 		GUI.Label(responseRect, descriptionOrResponse, responseTextStyle);
-
-		GUI.DrawTexture(leftQuoteRect, leftQuoteTexture);
-		GUI.DrawTexture(rightQuoteRect, rightQuoteTexture);
+		
+		if (displayQuotes)
+		{
+			GUI.DrawTexture(leftQuoteRect, leftQuoteTexture);
+			GUI.DrawTexture(rightQuoteRect, rightQuoteTexture);
+		}
 		
 		if (null != currentQuestion[0] && GUI.Button(question1Rect, currentQuestion[0].question, questionButtonStyle))
 		{
@@ -381,7 +389,7 @@ public class ClubState : MonoBehaviour {
 	
 	void RenderLettingInGUI()
 	{
-		GUI.DrawTexture(backgroundRect, backgroundTexture);
+		GUI.DrawTexture(backgroundRect, playingBackgroundTexture);
 		
 		GUI.DrawTexture(clubBackgroundRect, clubBackgroundOpenDoorTexture);
 		
@@ -407,7 +415,7 @@ public class ClubState : MonoBehaviour {
 	
 	void RenderRejectedGUI()
 	{
-		GUI.DrawTexture(backgroundRect, backgroundTexture);
+		GUI.DrawTexture(backgroundRect, playingBackgroundTexture);
 		
 		GUI.DrawTexture(clubBackgroundRect, clubBackgroundTexture);
 		
