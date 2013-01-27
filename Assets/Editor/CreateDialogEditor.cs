@@ -35,7 +35,7 @@ public class CreateDialogEditor : ScriptableObject {
 		}
 		else
 		{
-			dialog.nextDialog = firstDialog;
+			//dialog.nextDialog = firstDialog;
 		}
 		return dialog;
 	}
