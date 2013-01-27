@@ -253,7 +253,23 @@ public class ClubState : MonoBehaviour {
 	
 	string GetNewsBlurb(int alienCount)
 	{
-		return "Foooooooo.";
+		if (alienCount >= 10)
+		{
+			return "GG Agent BH. Uninstall the game already.";
+		}
+		if (alienCount >= 7)
+		{
+			return "Oh come on, Agent BH9.  You're not even trying.";
+		}
+		if (alienCount >= 4)
+		{
+			return "Agent BH9!  You've got to stop drinking on the job, man.";
+		}
+		if (alienCount >= 1)
+		{
+			return "Good enough for government work, Agent BH9.  Let's go out for a drink.";
+		}
+		return "Amazing job, Agent BH9. We need to get you to train our TSA agents.";
 	}
 
 	void OnGUI()
