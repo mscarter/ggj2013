@@ -16,9 +16,12 @@ public class MainMenu : MonoBehaviour {
 	public GUIStyle creditsButtonStyle;
 	public Rect creditsButtonRect;
 	
+	private AudioSource buttonAudio;
+	
 	void Awake()
 	{
 		instance = this;
+		buttonAudio = audio;
 	}
 	
 	void Start()
@@ -31,11 +34,13 @@ public class MainMenu : MonoBehaviour {
 		
 		if (GUI.Button(newGameButtonRect, "", newGameButtonStyle))
 		{
-			ClubState.instance.StartGame();
+			buttonAudio.Play();
+			ClubState.instance.GotoIntro();
 		}
 
 		if (GUI.Button(creditsButtonRect, "", creditsButtonStyle))
 		{
+			buttonAudio.Play();
 			ClubState.instance.ShowCredits();
 		}
 

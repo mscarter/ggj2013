@@ -51,6 +51,12 @@ public class ClubState : MonoBehaviour {
 	public Texture[] creditTextures;
 	#endregion GUI parameters
 	
+	#region Audio references
+	public AudioSource buttonClickSource;
+	public AudioSource introScreenSource;
+	public AudioSource denyAudioSource;
+	#endregion
+	
 	private enum GameState
 	{
 		SplashScreen,
@@ -71,7 +77,7 @@ public class ClubState : MonoBehaviour {
 	private CharacterDialog[] currentQuestion = new CharacterDialog[3];
 	
 	private string clubPatronCount;
-
+	
 	void Awake()
 	{
 		if (instance != null)
@@ -152,6 +158,7 @@ public class ClubState : MonoBehaviour {
 	{
 		if (allowIn)
 		{
+			AudioManager.instance.IncreaseVolume();
 			++currentClubPatrons;
 			clubPatronCount = string.Format("{0}/{1}", currentClubPatrons, currentClubSpace);
 			if ( currentPatron.isAlien ) ++currentAlienCount;
@@ -164,6 +171,7 @@ public class ClubState : MonoBehaviour {
 		}
 		else
 		{
+			denyAudioSource.Play();
 			if ( currentPatron.isAlien )
 			{
 				++aliensTurnedAway;
@@ -218,6 +226,7 @@ public class ClubState : MonoBehaviour {
 		if (GUI.Button(viewIntroButtonRect, "", viewIntroButtonStyle))
 		{
 			state = GameState.IntroScreen;
+			introScreenSource.Play();
 		}
 	}
 	
@@ -229,6 +238,7 @@ public class ClubState : MonoBehaviour {
 		
 		if (GUI.Button(playGameButtonRect, "", playGameButtonStyle))
 		{
+			buttonClickSource.Play();
 			StartGame();
 		}
 	}
@@ -241,18 +251,21 @@ public class ClubState : MonoBehaviour {
 		
 		GUI.Label(responseRect, descriptionOrResponse, responseTextStyle);
 		
-		if (GUI.Button(question1Rect, currentQuestion[0].question, questionButtonStyle))
+		if (null != currentQuestion[0] && GUI.Button(question1Rect, currentQuestion[0].question, questionButtonStyle))
 		{
+			buttonClickSource.Play();
 			AskQuestion(0);
 		}
 		
-		if (GUI.Button(question2Rect, currentQuestion[1].question, questionButtonStyle))
+		if (null != currentQuestion[1] && GUI.Button(question2Rect, currentQuestion[1].question, questionButtonStyle))
 		{
+			buttonClickSource.Play();
 			AskQuestion(1);
 		}
 		
-		if (GUI.Button(question3Rect, currentQuestion[2].question, questionButtonStyle))
+		if (null != currentQuestion[2] && GUI.Button(question3Rect, currentQuestion[2].question, questionButtonStyle))
 		{
+			buttonClickSource.Play();
 			AskQuestion(2);
 		}
 		
@@ -274,6 +287,12 @@ public class ClubState : MonoBehaviour {
 	void RenderScoringGUI()
 	{
 		GUI.DrawTexture(backgroundRect, backgroundTexture);
+	}
+	
+	public void GotoIntro()
+	{
+		introScreenSource.Play();
+		state = GameState.IntroScreen;	
 	}
 	
 	public void ShowCredits()
